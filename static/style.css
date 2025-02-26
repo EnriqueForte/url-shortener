@@ -139,3 +139,36 @@ p, #result, #statsResult {
         padding: 8px; /* Menos espaciado en celdas para ahorrar espacio */
     }
 }
+
+/* Estilo para el footer fijo, con fondo semi-transparente como la navbar */
+footer.fixed-bottom {
+    background: rgba(0, 0, 0, 0.6) !important; /* Fondo negro semi-transparente (60% opacidad), igual que la navbar, con !important para evitar overrides */
+    color: #fff; /* Texto blanco por defecto en el footer */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil en la parte superior para destacar */
+}
+
+/* Estilo para el contenido del footer */
+footer .text-center p {
+    color: #00ffff; /* Cian brillante para "Connect with me on LinkedIn:", futurista y visible contra el fondo oscuro */
+    font-weight: 500; /* Mediana negrita para destacar */
+}
+
+footer .text-center a {
+    color: #00bfff; /* Cian brillante para "Enrique Forte", futurista y visible */
+    font-weight: 500; /* Mediana negrita para destacar */
+}
+
+footer .text-center a:hover {
+    color: #0077B5; /* Azul de LinkedIn al pasar el mouse, manteniendo coherencia */
+    text-decoration: underline; /* Subrayado al hover para interacción */
+}
+
+footer .text-center img {
+    border: 1px solid #fff; /* Borde blanco sutil para destacar el logo */
+    border-radius: 4px; /* Bordes redondeados para un look moderno */
+    transition: transform 0.3s; /* Animación suave al pasar el mouse sobre el logo */
+}
+
+footer .text-center img:hover {
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño del logo al pasar el mouse */
+}
