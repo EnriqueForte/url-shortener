@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea responsiva en dispositivos móviles -->
+    <title>URL Shortener</title> <!-- Título de la página que aparece en la pestaña del navegador -->
+    <!-- Bootstrap CSS: enlace al CDN para usar los estilos de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Estilos personalizados: enlace a nuestro archivo CSS local para ajustes adicionales -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navbar: barra de navegación superior -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container"> <!-- Contenedor para mantener el contenido centrado y con márgenes -->
+            <a class="navbar-brand" href="/">URL Shortener</a> <!-- Logo/título clickable que lleva a la página principal -->
+            <!-- Botón para colapsar la navbar en pantallas pequeñas -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span> <!-- Icono de hamburguesa -->
+            </button>
+            <!-- Contenido colapsable de la navbar -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto"> <!-- Lista de navegación alineada a la derecha -->
+                    <li class="nav-item">
+                        <!-- Enlace para cargar todas las URLs desde la navbar -->
+                        <a class="nav-link" href="#" onclick="getAllUrls()">View All URLs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal: envuelto en un contenedor para márgenes y alineación -->
+    <div class="container mt-4"> <!-- Margen superior de 4 unidades -->
+        <!-- Sección para acortar URL: tarjeta con sombra -->
+        <div class="card mb-4 shadow-sm"> <!-- Margen inferior de 4 y sombra sutil -->
+            <div class="card-body"> <!-- Cuerpo de la tarjeta -->
+                <h5 class="card-title">Shorten a URL</h5> <!-- Título de la sección -->
+                <!-- Grupo de entrada: campo y botón juntos -->
+                <div class="input-group mb-3"> <!-- Margen inferior de 3 -->
+                    <input type="text" id="urlInput" class="form-control" placeholder="Enter a URL (e.g., https://www.google.com)"> <!-- Campo de texto para la URL -->
+                    <button class="btn btn-primary" onclick="shortenUrl()">Shorten</button> <!-- Botón para acortar, estilo primario (azul) -->
+                </div>
+                <p id="result" class="mt-2"></p> <!-- Resultado de la acción, margen superior de 2 -->
+            </div>
+        </div>
+
+        <!-- Sección para gestionar URLs: otra tarjeta -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Manage URL</h5>
+                <!-- Grupo de entrada para gestionar URLs -->
+                <div class="input-group mb-3">
+                    <input type="text" id="shortCodeInput" class="form-control" placeholder="Enter short code (e.g., 3uBC2Q)"> <!-- Campo para el código corto -->
+                    <button class="btn btn-outline-success" onclick="getStats()">Stats</button> <!-- Botón para estadísticas, estilo verde outline -->
+                    <button class="btn btn-outline-warning" onclick="updateUrl()">Update</button> <!-- Botón para actualizar, estilo amarillo outline -->
+                    <button class="btn btn-outline-danger" onclick="deleteUrl()">Delete</button> <!-- Botón para eliminar, estilo rojo outline -->
+                </div>
+                <p id="statsResult" class="mt-2"></p> <!-- Resultado de las acciones de gestión -->
+            </div>
+        </div>
+
+        <!-- Sección para todas las URLs: tarjeta con tabla -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">All URLs</h5>
+                <!-- Contenedor flexible para alinear botones -->
+                <div class="d-flex justify-content-between mb-3">
+                    <button class="btn btn-info" onclick="getAllUrls()">Load Database</button> <!-- Botón para cargar la tabla, estilo info (azul claro) -->
+                    <button class="btn btn-secondary" onclick="exportToCSV()">Export to CSV</button> <!-- Botón para exportar CSV, estilo secundario (gris) -->
+                </div>
+                <!-- Área para mostrar la tabla, responsiva para pantallas pequeñas -->
+                <div id="dbResult" class="table-responsive"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y Popper.js: necesarios para funcionalidades como el colapso de la navbar -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <!-- JavaScript personalizado: funciones para interactuar con la API -->
+    <script>
+        // Acortar una URL: envía POST a /shorten
+        async function shortenUrl() {
+            const url = document.getElementById('urlInput').value;
+            try {
+                const response = await fetch('/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = 
+                        `Short URL: <a href="${data.shortCode}" target="_blank" class="text-primary">${data.shortCode}</a>`;
+                } else {
+                    document.getElementById('result').innerHTML = `<span class="text-danger">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Obtener estadísticas: envía GET a /shorten/<short_code>/stats
+        async function getStats() {
+            const shortCode = document.getElementById('shortCodeInput').value;
+            try {
+                const response = await fetch(`/shorten/${shortCode}/stats`);
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('statsResult').innerHTML = 
+                        `URL: ${data.url}<br>Short Code: ${data.shortCode}<br>Access Count: ${data.accessCount}`;
+                } else {
+                    document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Actualizar URL: envía PUT a /shorten/<short_code>
+        async function updateUrl() {
+            const shortCode = document.getElementById('shortCodeInput').value;
+            const newUrl = prompt("Enter the new URL:");
+            if (!newUrl) return;
+            try {
+                const response = await fetch(`/shorten/${shortCode}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: newUrl })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('statsResult').innerHTML = `<span class="text-success">Updated to: ${data.url}</span>`;
+                } else {
+                    document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Eliminar URL: envía DELETE a /shorten/<short_code>
+        async function deleteUrl() {
+            const shortCode = document.getElementById('shortCodeInput').value;
+            try {
+                const response = await fetch(`/shorten/${shortCode}`, {
+                    method: 'DELETE'
+                });
+                if (response.status === 204) {
+                    document.getElementById('statsResult').innerHTML = `<span class="text-success">URL deleted successfully</span>`;
+                } else {
+                    const data = await response.json();
+                    document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('statsResult').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Cargar todas las URLs: envía GET a /db y muestra la tabla
+        async function getAllUrls() {
+            try {
+                const response = await fetch('/db');
+                if (!response.ok) throw new Error('Failed to load database');
+                const data = await response.json();
+                let html = '<table class="table table-striped table-hover"><thead><tr><th>ID</th><th>Short Code</th><th>URL</th><th>Access Count</th></tr></thead><tbody>';
+                data.forEach(url => {
+                    html += `<tr><td>${url.id}</td><td>${url.shortCode}</td><td>${url.url}</td><td>${url.accessCount}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('dbResult').innerHTML = html;
+            } catch (error) {
+                document.getElementById('dbResult').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Exportar a CSV: envía GET a /export_csv y descarga el archivo
+        async function exportToCSV() {
+            try {
+                const response = await fetch('/export_csv');
+                if (!response.ok) throw new Error('Failed to export CSV');
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'urls.csv';
+                link.click();
+            } catch (error) {
+                document.getElementById('dbResult').innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

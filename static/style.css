@@ -1,0 +1,141 @@
+/* Estilos generales del cuerpo de la página: fondo de imagen sin overlay */
+body {
+    font-family: Arial, sans-serif; /* Fuente predeterminada para un look limpio */
+    background: url('/static/images/url_shorter.jpg') no-repeat center center fixed; /* Fondo con la imagen, centrada, fija y sin repetir */
+    background-size: cover; /* La imagen cubre toda la pantalla, escalando proporcionalmente */
+    margin: 0; /* Elimina márgenes por defecto */
+    padding: 0; /* Quitamos padding para que la imagen sea el fondo completo */
+    position: relative; /* Permite posicionamiento relativo para otros elementos */
+}
+
+/* Contenedor principal: mantenido para centrar contenido */
+.container {
+    max-width: 600px; /* Ancho máximo para mantener el contenido centrado */
+    margin: 0 auto; /* Centrado horizontal */
+    position: relative; /* Para que los elementos hijos estén sobre el fondo */
+    z-index: 2; /* Sobre cualquier elemento de fondo, pero debajo de los interactivos */
+}
+
+/* Título principal: personalizado para la navbar, pero no usado en tarjetas */
+h1 {
+    text-align: center; /* Centrado del texto */
+    color: #333; /* Color gris oscuro, pero ajustaremos si es necesario */
+    /* Nota: Este estilo puede no aplicarse si usamos solo la navbar de Bootstrap */
+}
+
+/* Sección: espaciado entre componentes */
+.section {
+    margin-bottom: 20px; /* Espacio inferior entre secciones, sigue siendo útil */
+}
+
+/* Subtítulos: estilo para h2 dentro de las tarjetas, blanco para contraste */
+h2, .card-title {
+    color: #fff; /* Blanco para contraste con el fondo oscuro de la imagen */
+    font-size: 1.2em; /* Tamaño relativo para jerarquía visual */
+}
+
+/* Párrafos y resultados: blanco para legibilidad contra el fondo oscuro */
+p, #result, #statsResult {
+    margin-top: 10px; /* Espacio superior para separar del contenido anterior */
+    color: #111111; /* Blanco para contraste con el fondo oscuro */
+}
+
+/* Personalización de la navbar de Bootstrap sobre el fondo oscuro */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.6) !important; /* Navbar más transparente para visibilidad del fondo, pero con contraste */
+}
+
+.navbar-brand {
+    font-weight: bold; /* Negrita para destacar el título en la navbar */
+    color: #fff !important; /* Blanco para legibilidad */
+}
+
+.nav-link {
+    color: #fff !important; /* Enlaces blancos para contraste */
+}
+
+.nav-link:hover {
+    color: #007bff !important; /* Azul al pasar el mouse, manteniendo consistencia con Bootstrap */
+}
+
+/* Personalización de las tarjetas de Bootstrap: más transparentes */
+.card {
+    border: none; /* Elimina el borde por defecto para un look más limpio */
+    background: rgba(255, 255, 255, 0.7); /* Fondo blanco más transparente (70% opacidad) para que el fondo destaque */
+    color: #333; /* Texto gris oscuro en las tarjetas para contraste */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque para un look moderno (soporte limitado, opcional) */
+}
+
+/* Botones: ajustados para legibilidad y visibilidad en el fondo oscuro */
+.btn {
+    color: #fff; /* Texto blanco por defecto en botones */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Mantiene el azul primario de Bootstrap */
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Oscurece al pasar el mouse, consistencia con Bootstrap */
+    border-color: #0056b3;
+}
+
+.btn-outline-success, .btn-outline-warning, .btn-outline-danger, .btn-outline-info, .btn-outline-secondary {
+    color: #fff; /* Texto blanco en botones outline */
+    border-color: #fff; /* Borde blanco para contraste */
+}
+
+.btn-outline-success:hover, .btn-outline-warning:hover, .btn-outline-danger:hover, .btn-outline-info:hover, .btn-outline-secondary:hover {
+    background-color: #fff; /* Fondo blanco al pasar el mouse */
+    color: #333; /* Texto gris oscuro para contraste */
+}
+
+/* Asegurar visibilidad de los botones outline (Stats, Update, Delete) */
+.btn-outline-success {
+    border-width: 2px; /* Borde más grueso para destacar */
+}
+
+.btn-outline-warning {
+    border-width: 2px; /* Borde más grueso para destacar */
+}
+
+.btn-outline-danger {
+    border-width: 2px; /* Borde más grueso para destacar */
+}
+
+/* Estilos para la tabla de URLs: personalización sobre Bootstrap, más transparente */
+.table th {
+    background-color: rgba(0, 123, 255, 0.9); /* Fondo azul semi-transparente para los encabezados */
+    color: white; /* Texto blanco para contraste */
+    font-weight: bold; /* Negrita para resaltar */
+}
+
+.table td {
+    color: #333; /* Color gris oscuro para el texto de las celdas */
+    background: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente para las celdas */
+}
+
+/* Columna Access Count: color condicional */
+.table td:nth-child(4) {
+    color: #007bff; /* Azul para valores mayores a 0 */
+}
+
+.table td:nth-child(4):where(:text("0")) {
+    color: #333; /* Gris para 0 */
+}
+
+/* Resaltado al pasar el mouse: ajustado para Bootstrap table-hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(233, 236, 239, 0.8); /* Gris claro semi-transparente */
+}
+
+/* Ajuste para pantallas pequeñas: responsividad */
+@media (max-width: 600px) {
+    .table {
+        font-size: 0.9em; /* Reduce el tamaño de fuente para pantallas pequeñas */
+    }
+    .table th, .table td {
+        padding: 8px; /* Menos espaciado en celdas para ahorrar espacio */
+    }
+}
