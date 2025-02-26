@@ -59,12 +59,15 @@ USO
 CAPTURAS DE PANTALLA
 
 Interfaz principal
+
 ![alt text](main_interface.png)
 
 Gestión de URL
+
 ![alt text](screenshots/manage_url.png)
 
 Tabla de URLs
+
 ![alt text](screenshots/all_urls.png)
 
 LICENCIA
